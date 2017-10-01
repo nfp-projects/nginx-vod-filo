@@ -1,6 +1,8 @@
 version: 2
 jobs:
+  context: org-global
   build:
+    context: org-global
     docker:
       - image: docker:17.05.0-ce-git
     working_directory: ~/nginx-vod-filo
@@ -8,9 +10,8 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          context: org-global
           name: Check context
-          command: echo $CONTEXT_TRUE $CIRCLECI
+          command: echo $CONTEXT_TRUE - $CIRCLECI
 #      - run:
 #          name: Build docker image
 #          command: docker build -t nfpis/nginx-vod-filo:build_${CIRCLE_BUILD_NUM} -t nfpis/nginx-vod-filo:${CIRCLE_SHA1} -t nfpis/nginx-vod-filo:latest .
