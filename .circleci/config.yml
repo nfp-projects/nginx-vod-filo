@@ -1,7 +1,6 @@
 version: 2
 jobs:
   build:
-    context: org-global
     docker:
       - image: docker:17.05.0-ce-git
     working_directory: ~/nginx-vod-filo
@@ -9,6 +8,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          context: org-global
           name: Check context
           command: echo $CONTEXT_TRUE $CIRCLECI
 #      - run:
