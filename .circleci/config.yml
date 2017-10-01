@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker:17.05.0-ce-git
+    working_directory: ~/nginx-vod-filo
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build docker image
+          command: docker build -t nfpis/nginx-vod-filo:build_${CIRCLE_BUILD_NUM} -t nfpis/nginx-vod-filo:${CIRCLE_SHA1} -t nfpis/nginx-vod-filo:latest .
+      - run:
+          name: Push to docker
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push nfpis/nginx-vod-filo
+      - deploy:
+          name: Deploy to production
+          command: |
+            echo Not implemented
