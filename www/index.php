@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="is" dir="ltr" data-cast-api-enabled="true">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Filadelfia</title>
+		
+    <style>
+    * {-webkit-box-sizing: border-box;Box-Sizing:border-box;}
+    HTML, BODY, #main {
+    	Margin:0;
+      Padding:0;
+			Width:100%;
+			Height:100%;
+			Overflow:hidden;
+			Background:#000;
+    }
+    #player {
+    	Margin:0 auto;
+			Overflow:hidden;
+    }
+    </style>
+  </head>
+  <body>
+
+    <main>
+        <div id="player">
+					  <div id="playerdiv">
+					</div>
+				</div>
+    </main>
+    <script src="//content.jwplatform.com/libraries/Xl6C9H3O.js"></script>
+                  
+		
+    <script>
+    function getParameterByName(name) {
+      name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+      var regexS = "[\\?&]" + name + "=([^&#]*)";
+      var regex = new RegExp(regexS);
+      var results = regex.exec(window.location.href);
+      if(results == null)
+        return "";
+      else
+        return decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+		
+    function resizePlayer(player) {
+      var D = document;
+			var player=D.getElementById('player');
+    	var srcWidth=1280;
+    	var srcHeight=720;
+    	var maxWidth=Math.max( Math.max(D.body.scrollWidth, D.documentElement.scrollWidth), Math.max(D.body.offsetWidth, D.documentElement.offsetWidth), Math.max(D.body.clientWidth, D.documentElement.clientWidth) );
+    	var maxHeight=Math.min( Math.min(D.body.scrollHeight, D.documentElement.scrollHeight), Math.min(D.body.offsetHeight, D.documentElement.offsetHeight), Math.min(D.body.clientHeight, D.documentElement.clientHeight) );
+
+      var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+    	
+      player.style.width=Math.round(srcWidth*ratio)+'px';
+      player.style.height=Math.round(srcHeight*ratio)+'px';
+    }
+
+    window.onload=function() {
+
+	    resizePlayer('player');
+
+            var clip='';
+	    var clipStart=0;
+            if(getParameterByName("start") != '' && parseInt(getParameterByName("start")) > 0) {
+                clip+='clipFrom/'+(getParameterByName("start")*1000)+'/';
+		clipStart=getParameterByName("start");
+            }
+
+            if(getParameterByName("duration") != '' && parseInt(getParameterByName("duration")) > 0) {
+                clip+='clipTo/'+((parseInt(clipStart)+parseInt(getParameterByName("duration")))*1000)+'/';
+            }
+
+
+	    if(getParameterByName("video") != '') {
+		stream='http://localhost:4000/kennslur/'+getParameterByName("video")+'/'+clip+'master.m3u8';
+		console.log('file');
+	    } else if(getParameterByName("audio") != '') {
+		stream='http://localhost:4000/kennsluraudio/'+getParameterByName("audio");
+		console.log('audio');
+            } else if(getParameterByName("audioonly") != '') {
+		stream='http://localhost:4000/kennslur/'+getParameterByName("audioonly")+'/tracks/a1/master.m3u8';
+		console.log('audio-only');
+	    } else {
+		stream='http://localhost:4000/notfound.mp4';
+		console.log('none');
+	    }
+
+	    if(getParameterByName("poster") != '') {
+		poster='/posters/'+getParameterByName("poster");
+	    } else if(getParameterByName("posterurl") != '') {
+		poster=getParameterByName("posterurl");
+	    } else {
+		poster='http://localhost:4000/b.png';
+	    }
+            console.log(stream);
+
+            jwplayer('playerdiv').setup({
+                /*
+		sources: [{
+                      file: stream,
+		      //},{file: 'http://filadelfia.rcx.is/notfound.mp4',
+                }],
+		*/
+		
+		playlist: [/*{
+		  file: 'http://localhost:4000/intro.mp4',
+		  image: poster,
+		},*/
+		{
+		  file: stream,
+		  image: poster,
+		}],
+		
+		image: poster,
+                width: '100%',
+		height: '100%',
+		autostart: true,
+        	aspectratio: '16:9',
+		stretching: 'exactfit',
+		androidhls: 'true',
+                fallback: 'false',
+                primary: 'flash'
+            });
+	    var playerInstance = jwplayer('playerdiv');
+	    playerInstance.onError( function(e) {
+                console.log(e);
+		playerInstance.load({file:'http://localhost:4000/notfound.mp4'});
+		playerInstance.play(true);
+	    });
+
+    }
+window.onresize=function() {resizePlayer('player');};</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-68293245-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<?php
+//echo '<!-- PHP! -->';
+?>
+</body></html>
