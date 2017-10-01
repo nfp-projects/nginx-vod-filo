@@ -75,16 +75,16 @@
 
 
 	    if(getParameterByName("video") != '') {
-		stream='http://localhost:4000/kennslur/'+getParameterByName("video")+'/'+clip+'master.m3u8';
+		stream='http://filadelfia.nfp.is/kennslur/'+getParameterByName("video")+'/'+clip+'master.m3u8';
 		console.log('file');
 	    } else if(getParameterByName("audio") != '') {
-		stream='http://localhost:4000/kennsluraudio/'+getParameterByName("audio");
+		stream='http://filadelfia.nfp.is/kennsluraudio/'+getParameterByName("audio");
 		console.log('audio');
             } else if(getParameterByName("audioonly") != '') {
-		stream='http://localhost:4000/kennslur/'+getParameterByName("audioonly")+'/tracks/a1/master.m3u8';
+		stream='http://filadelfia.nfp.is/kennslur/'+getParameterByName("audioonly")+'/tracks/a1/master.m3u8';
 		console.log('audio-only');
 	    } else {
-		stream='http://localhost:4000/notfound.mp4';
+		stream='http://filadelfia.nfp.is/notfound.mp4';
 		console.log('none');
 	    }
 
@@ -93,7 +93,7 @@
 	    } else if(getParameterByName("posterurl") != '') {
 		poster=getParameterByName("posterurl");
 	    } else {
-		poster='http://localhost:4000/b.png';
+		poster='http://filadelfia.nfp.is/b.png';
 	    }
             console.log(stream);
 
@@ -106,7 +106,7 @@
 		*/
 		
 		playlist: [/*{
-		  file: 'http://localhost:4000/intro.mp4',
+		  file: 'http://filadelfia.nfp.is/intro.mp4',
 		  image: poster,
 		},*/
 		{
@@ -127,7 +127,7 @@
 	    var playerInstance = jwplayer('playerdiv');
 	    playerInstance.onError( function(e) {
                 console.log(e);
-		playerInstance.load({file:'http://localhost:4000/notfound.mp4'});
+		playerInstance.load({file:'http://filadelfia.nfp.is/notfound.mp4'});
 		playerInstance.play(true);
 	    });
 
