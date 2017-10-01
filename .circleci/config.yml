@@ -1,5 +1,4 @@
 version: 2
-context: org-global
 jobs:
   build:
     context: org-global
