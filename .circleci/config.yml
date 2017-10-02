@@ -9,12 +9,12 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build docker image
-          command: docker build -t nfpis/nginx-vod-filo:build_${CIRCLE_BUILD_NUM} -t nfpis/nginx-vod-filo:${CIRCLE_SHA1} -t nfpis/nginx-vod-filo:latest .
+          command: docker build -t thething/nginx-vod-filo:build_${CIRCLE_BUILD_NUM} -t thething/nginx-vod-filo:${CIRCLE_SHA1} -t thething/nginx-vod-filo:latest .
       - run:
           name: Push to docker
           command: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push nfpis/nginx-vod-filo
+            docker login quay.io -u $QUAY_USER -p $QUAY_PASS
+            docker push thething/nginx-vod-filo
       - deploy:
           name: Deploy to production
           command: |
