@@ -14,7 +14,7 @@ jobs:
           name: Push to docker
           command: |
             docker login quay.io -u $QUAY_USER -p $QUAY_PASS
-            docker push thething/nginx-vod-filo
+            docker push quay.io/thething/nginx-vod-filo
       - deploy:
           name: Deploy to production
           command: |
