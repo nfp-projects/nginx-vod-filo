@@ -9,7 +9,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build docker image
-          command: docker build -t quay.io/thething/nginx-vod-filo:build_${CIRCLE_BUILD_NUM} -t quay.io/thething/nginx-vod-filo:${CIRCLE_SHA1} -t quay.io/thething/nginx-vod-filo:latest .
+          command: docker build -t thething/nginx-vod-filo:build_${CIRCLE_BUILD_NUM} -t thething/nginx-vod-filo:${CIRCLE_SHA1} -t thething/nginx-vod-filo:latest .
       - run:
           name: Push to docker
           command: |
