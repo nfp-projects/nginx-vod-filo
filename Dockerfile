@@ -10,8 +10,9 @@ RUN apk add --no-cache supervisor openssl \
 # ENV DYN_UPSTREAM_VERSION=29e05c5de4d9e7042f66b99d22bef878fd761219 \
 ENV NGINX_VERSION=1.12.1 \
     VOD_MODULE_VERSION=1.20 \
-    PHP_VERSION=7.1.10 \
-    SOURCE_FOLDER=/src/
+    LUA_VERSION=0.10.13 \
+    SOURCE_FOLDER=/src/ \
+    LUAJIT_VERSION=2.0.5
 
 ###############################
 # NGINX                       #
@@ -19,22 +20,31 @@ ENV NGINX_VERSION=1.12.1 \
 RUN mkdir /src  \
           /src/nginx \
           /src/nginx-vod-module \
-          /src/nginx-upstream-dynamic-servers && \
-    cd /src/nginx && \
+          /src/lua-nginx-module \
+          /src/luajit2 && \
     apk add --virtual build-dependencies \
-            --no-cache curl build-base openssl-dev ffmpeg-dev linux-headers \
+            --no-cache curl build-base ffmpeg-dev linux-headers \
                       zlib-dev pcre-dev binutils && \
+    echo "Downloading nginx https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" && \
     curl -sL https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz | tar -C ${SOURCE_FOLDER}nginx --strip 1 -xz && \
+    echo "Downloading nginx-vod-module https://github.com/kaltura/nginx-vod-module/archive/${VOD_MODULE_VERSION}.tar.gz" && \
     curl -sL https://github.com/kaltura/nginx-vod-module/archive/${VOD_MODULE_VERSION}.tar.gz | tar -C ${SOURCE_FOLDER}nginx-vod-module --strip 1 -xz && \
-#   curl -sL https://github.com/GUI/nginx-upstream-dynamic-servers/archive/${DYN_UPSTREAM_VERSION}.tar.gz | tar -C ${SOURCE_FOLDER}nginx-upstream-dynamic-servers --strip 1 -xz && \
+    echo "Downloading lua-nginx-module https://github.com/openresty/lua-nginx-module/archive/v$LUA_VERSION.tar.gz" && \
+    curl -sL https://github.com/openresty/lua-nginx-module/archive/v$LUA_VERSION.tar.gz | tar -C ${SOURCE_FOLDER}lua-nginx-module --strip 1 -xz && \
+    echo "Downloading LuaJIT http://luajit.org/download/LuaJIT-$LUAJIT_VERSION.tar.gz" && \
+    curl -sL http://luajit.org/download/LuaJIT-$LUAJIT_VERSION.tar.gz | tar -C ${SOURCE_FOLDER}luajit2 --strip 1 -xz && \
+    cd ${SOURCE_FOLDER}luajit2 && \
+    make && \
+    make install && \
+    cd /src/nginx && \
     ./configure --prefix=/usr/local/nginx \
-      --add-module=../nginx-vod-module \
-#     --add-module=../nginx-upstream-dynamic-servers \
-      --with-http_ssl_module \
-      --with-ipv6 \
-      --with-file-aio \
-      --with-threads \
-      --with-cc-opt="-O3" && \
+                --with-ld-opt="-Wl,-rpath,/usr/local/luajit-2.0.5/lib" \
+                --add-module=../nginx-vod-module \
+                --add-module=../lua-nginx-module \
+                --with-ipv6 \
+                --with-file-aio \
+                --with-threads \
+                --with-cc-opt="-O3" && \
     make && \
     make install && \
     strip /usr/local/nginx/sbin/nginx* && \
@@ -44,34 +54,11 @@ RUN mkdir /src  \
            /usr/local/nginx/html \
            /usr/local/nginx/conf/*.default
 
-###############################
-# PHP                         #
-###############################
-RUN mkdir /src \
-          /src/php && \
-    cd /src/php && \
-    apk add --virtual build-dependencies --no-cache curl build-base linux-headers libxml2-dev && \
-    curl -sL http://uk1.php.net/get/php-${PHP_VERSION}.tar.gz/from/this/mirror | tar -C ${SOURCE_FOLDER}php --strip 1 -xz && \
-    ./configure --enable-fpm \
-                --without-sqlite3 \
-                --without-pear \
-                --disable-phar \
-                --disable-pdo && \
-    make && \
-    make install && \
-    cp php.ini-production /usr/local/php/php.ini && \
-    cp sapi/fpm/php-fpm /usr/local/bin && \
-    apk del build-dependencies && \
-    rm -rf /src \
-           /usr/local/php/man
-
 
 ###############################
 # SERVER                      #
 ###############################
 WORKDIR /
-COPY conf/php-fpm.conf /usr/local/etc/php-fpm.conf
-COPY conf/fastcgi_params /usr/local/nginx/conf/fastcgi_params
 COPY conf/nginx.conf /usr/local/nginx/conf/nginx.conf
 COPY conf/supervisord.conf /etc/supervisord.conf
 COPY www/ /www

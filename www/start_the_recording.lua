@@ -1,3 +1,15 @@
+if not ngx.var.arg_output then
+  ngx.say("Missing query 'output'")
+  return
+end
+
+assert(io.popen("/usr/bin/ffmpeg -y -i 'rtmp://82.221.112.178:1935/live/ljosbrot live=1' -vcodec copy -acodec copy /content/kennslur/".. ngx.var.arg_output ..".mp4 </dev/null >/dev/null 2>/dev/null &"))
+ngx.say([[
+<br>
+<input type="button" value="Stodva upptoku" onclick="window.location='stop_recording.php';return false;">
+]])
+
+--[[
 <?php
 error_reporting(E_ALL);
 if(!isset($_REQUEST['output'])) { die('Missing output'); }
@@ -9,3 +21,4 @@ echo PHP_EOL.'OK START';
 ?>
 <br>
 <input type="button" value="Stodva upptoku" onclick="window.location='stop_recording.php';return false;">
+--]]
