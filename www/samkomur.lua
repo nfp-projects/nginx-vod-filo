@@ -89,7 +89,7 @@ ngx.say([[
             playlist: [
 ]])
 for i = 1, total do
-  ngx.say('            { file: "http://http://storage01.nfp.is//kennslur/' .. files[i] .. '/master.m3u8", title: "' .. files[i] .. '" }, ')
+  ngx.say('            { file: "http://storage01.nfp.is/kennslur/' .. files[i] .. '/master.m3u8", poster: "http://storage01.nfp.is/kennslurraw/' .. files[i]:gsub('.mp4','.jpg') .. '", title: "' .. files[i]:gsub('.mp4','') .. '" }, ')
 end
 ngx.say([[
             ],
