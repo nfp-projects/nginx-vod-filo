@@ -89,7 +89,7 @@ ngx.say([[
             playlist: [
 ]])
 for i = 1, total do
-  ngx.say('            { file: "http://storage01.nfp.is/kennslur/' .. files[i] .. '/master.m3u8", image: "http://storage01.nfp.is/kennslurraw/' .. files[i]:gsub('.mp4','.jpg') .. '", title: "' .. files[i]:gsub('.mp4','') .. '" }, ')
+  ngx.say('            { file: "https://filadelfia.nfp.is/kennslur/' .. files[i] .. '/master.m3u8", image: "https://filadelfia.nfp.is/kennslurraw/' .. files[i]:gsub('.mp4','.jpg') .. '", title: "' .. files[i]:gsub('.mp4','') .. '" }, ')
 end
 ngx.say([[
             ],
@@ -106,7 +106,7 @@ ngx.say([[
         });
         var playerInstance = jwplayer('playerdiv');
         playerInstance.onError(function(e) {
-            playerInstance.load({ file: 'http://http://storage01.nfp.is//notfound.mp4' });
+            playerInstance.load({ file: 'https://filadelfia.nfp.is//notfound.mp4' });
             playerInstance.play(true);
         });
 
