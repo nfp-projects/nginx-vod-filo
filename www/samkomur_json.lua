@@ -69,9 +69,17 @@ for k,v in pairs(result) do
   ngx.say('    "data":"' .. v['date'] .. '",')
   ngx.say('    "items": [')
   for x,y in pairs(v['items']) do
-    ngx.say('      { "time":"' .. y['time'] .. '", "file":"' .. y['file'] .. '" }')
+    if next(v['items'], x) == nil then
+      ngx.say('      { "time":"' .. y['time'] .. '", "file":"' .. y['file'] .. '" }')
+    else
+      ngx.say('      { "time":"' .. y['time'] .. '", "file":"' .. y['file'] .. '" },')
+    end
   end
-  ngx.say('    ],')
-  ngx.say('  },')
+  ngx.say('    ]')
+  if next(result, k) == nil then
+    ngx.say('  }')
+  else
+    ngx.say('  },')
+  end
 end
 ngx.say(']')
