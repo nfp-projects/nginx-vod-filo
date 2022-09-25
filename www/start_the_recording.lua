@@ -3,7 +3,7 @@ if not ngx.var.arg_output then
   return
 end
 
-assert(io.popen("/usr/bin/ffmpeg -y -i 'rtmp://stream.nfp.is:1935/live/ljosbrot live=1' -vcodec copy -acodec copy /content/kennslur/".. ngx.var.arg_output ..".mp4 </dev/null >/dev/null 2>/dev/null &"))
+assert(io.popen("/usr/bin/ffmpeg -y -i 'rtmp://192.168.93.59:1935/live/ljosbrot live=1' -vcodec copy -acodec copy /content/kennslur/".. ngx.var.arg_output ..".mp4 </dev/null >/dev/null 2>/dev/null &"))
 ngx.say([[
 <br>
 <input type="button" value="Stodva upptoku" onclick="window.location='stop_recording.php';return false;">
